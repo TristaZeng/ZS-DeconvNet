@@ -1,0 +1,5 @@
+tensorflow-gpu==2.5.0
+imageio
+tifffile
+scipy==1.7.1
+opencv-python

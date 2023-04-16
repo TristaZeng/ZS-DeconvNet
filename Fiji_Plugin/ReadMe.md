@@ -1,0 +1,97 @@
+# Tutorial of Zero-Shot DeconvNet Fiji plugin
+
+*** 
+
+## 1. Installation
+
+You can follow the instructions below to install the plugin:
+
+- Copy `./Fiji-plugin/jars/*` and `./Fiji-plugin/plugins/*` to your root path of Fiji `/*/Fiji.app/`.
+
+- Restart Fiji.
+
+- Start the ZS-DeconvNet Fiji Plugin:
+  
+  !["Access to ZS-DeconvNet Fiji Plugin"](./readme_imgs/access.png "Access to ZS-DeconvNet Fiji Plugin")
+
+****
+
+This Fiji plugin can work on workstations with Linux and Windows operating system, but not MacOS. Because TensorFlow-Java pacakge cannot be installed on MacOS, which is the key dependent package of ZS-DeconvNet. We'll be looking for the solutions and trying to make our plugin compatible with MacOS someday.
+
+## 2. Set CPU/GPU and TensorFlow version
+
+The ZS-DeconvNet Fiji plugin was developed based on TensorFlow-Java 1.15.0, which is compatible with CUDA version of 10.1 and cuDNN version of 7.5.1. The default option is to use CPU, but if you would like to run with GPU, or process models with a different TensorFlow version, please follow these steps:
+
+- Open **Edit > Options > Tensorflow**, and choose the version matching your model or setting.
+- Wait until a message pops up telling you that the library was installed.
+- Restart Fiji.
+
+![Edit > Option > Tensorflow](./readme_imgs/tensorflow.png)
+
+****
+
+## 3. Inference with ZS-DeconvNet Fiji plugin
+
+Given a pre-trained ZS-DeconvNet model and an image or stack to be processed, the Fiji plugin is able to generate the corresponding denoised (optional) and super-resolved deconvolution image or stack. The workflow includes following steps:
+
+- Open the image or stack in Fiji and start ZS-DeconvNet plugin by Clicking **Plugins > ZS-DeconvNet > predict**.
+
+- Select the network model file, i.e., .zip file in the format of BioImage Model Zoo bundle. Of note, the model file could be trained and saved either by Python codes (see [this gist](https://gist.github.com/asimshankar/000b8d276f211f972168afa138eb3cc7)) or ZS-DeconvNet Fiji plugin, but has to be saved with TensorFlow environment <= 1.15.0.
+
+- Check inference hyper-parameters. The options and parameters here are primarily selected to properly normalize the input data (NormalizeInput, PercentileBottom, and PercentileTop), perform tiling prediction to save memory of CPUs or GPUs (Number of tiles, Overlap between tiles, and Batch size), and decide whether to show progress dialog and denoising results or not (Show progress dialog and Show denoising result). A detailed description table is shown in [the tutorial](https://tristazeng.github.io/ZS-DeconvNet/Tutorial/) in our website. 
+  
+  ![Predict Parameter](./readme_imgs/predict.png "Predict Parameter")
+  
+  Please note that when using 3D ZS-DeconvNet model, make sure the third
+  dimension of the stack is matched with `3[153]` dimension of the model:
+  
+  ![Remap Parameter](./readme_imgs/remap.png "Remap Parameter")
+
+- Image processing with status bar shown in the message box (if select Show progress dialog).
+  
+  ![UI of Predict](./readme_imgs/predict_progress.png "UI of Predict")
+
+- The denoised (if select Show denoising result) and deconvolved output will pop out in separate Fiji windows automatically. Then the processed images or stacks could be viewed, manipulated, and saved via Fiji.
+
+****
+
+## 4. Training with ZS-DeconvNet Fiji plugin
+
+For ZS-DeconvNet model training, we provide two commands: **train on augmented data** and **train on opened img**, which differ in the ways of data loading and augmentation. The former command loads input data and corresponding GT images which are augmented elsewhere, e.g., in MATLAB or Python, from two data folders file by file, and the latter command directly takes the image stack opened in the current Fiji window as the training data and automatically perform data augmentation including image re-corruption (for 2D cases), random cropping, rotation and flipping into a pre-specified patch number.
+
+### 4.1 Train 2D/3D ZS-DeconvNet on augmented data
+
+- Start the plugin by **Plugins > ZS-DeconvNet > train on augmented data** and select the folders containing input images and GT images.
+  
+  ![Train on augmented data Parameter](./readme_imgs/train_on_augmented_img.png "Train on augmented data Parameter")
+
+- Select the network type, i.e., 2D ZS-DeconvNet or 3D ZS-DeconvNet, the PSF file used for calculating deconvolution loss and choose training hyper-parameters, which include total epochs, iteration number per epoch, batch size, and initial learning rate. **Make sure that the PSF file has the correct dxy and dz. We have given an interpolation method in our Python training code to adjust dxy and dz, and you can make use of it. It is also recommended that you normalize the PSF by dividing its summation first.** A detailed description table of these hyper-parameters is shown in the [the tutorial](https://tristazeng.github.io/ZS-DeconvNet/Tutorial/) of our website.
+
+- Click OK to start training. A message box containing training information will pop up, and three preview windows will be displayed after each epoch, showing the current input images, denoised output images and deconvolution output images.
+  
+  ![Train progress](./readme_imgs/train_progress.png "Train progress")
+  
+  ![Train preview](./readme_imgs/train_preview.png "Train preview")
+
+- Three types of exit:
+  (i) Press **Cancel > Close** to enforce an exit if you don't want to train or save this model.
+  (ii) Press **Finish Training** for an early stopping. A window containing model information (Overview, Metadata, Inputs & Outputs, Training) will pop up and you can save the model by **File actions > Save to..**.
+  (iii) After the training is completed, a window containing model information (Overview, Metadata, Inputs & Outputs, Training) will pop up and you can save the model by **File actions > Save to..**.
+  
+  ![](D:\ZS_DeconvNet\Source_codes_and_Fiji_plugin\ZS-DeconvNet_Fiji_Plugin\readme_imgs\save_model.png)
+  
+  Of note, you can also press **Export Model** during training to export the lastest saved model without disposing the training progress.
+
+### 4.2 Train 2D/3D ZS-DeconvNet on opened images
+
++ Open the image or stack to be used for training in Fiji and start the ZS-DeconvNet plugin by clicking **Plugins > ZS-DeconvNet > train on opened img**.
+
++ For 2D ZS-DeconvNet training by the command of **train on opened images**, three extra recorruption-related parameters of $\alpha$, $\beta _1$, and $\beta _2$ are tuneable, where $\alpha$ and $\beta _1$ are set as [1, 2] and [0.5, 1.5] by default, and $\beta _2$ should be set around the standard deviation of the camera background, which could be pre-calibrated from blank frames or calculated from empty regions of the training data. The background value of the image or stack  and the patch shape will also be needed for data generation. A detailed description table of these hyper-parameters is shown in [the tutorial](https://tristazeng.github.io/ZS-DeconvNet/Tutorial/) of our website.
+  
+  ![Train on opened img Parameter](./readme_imgs/train_on_opened_img.png "Train on opened img Parameter")
+
++ Instructions for training and saving model are the same as 4.1.
+
+### 4.3 Extracting after training
+
+The model saved via **File actions > Save to..** is in BioImage format. For inference with ZS-DeconvNet plugin, you need to extract this file and find `./tf_saved_model_bundle.zip`, which is the zip file needed in **Plugins > ZS-DeconvNet > predict**. 
