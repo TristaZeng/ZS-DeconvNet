@@ -22,14 +22,14 @@
 # --insert_xy: padded blank margin in pixels in each side 
 # --upsample_flag: 0 or 1, whether the network upsamples the image
 
-cd C:/Users/Admin/Git/repo/ZS-DeconvNet-master/train_inference_python
+cd C:/Users/Admin/Git/repo/ZS-DeconvNet/Python_MATLAB_Codes/train_inference_python
 # ------------------------------- examples1 3D LLS -------------------------------
 
 python Infer_3D.py --num_seg_window_z 2 --num_seg_window_x 2 --num_seg_window_y 1 \
                    --background 100 --input_dir '../saved_models/LLS3D_Mitochondria/test_data/NoisyWF.tif'  \
                    --load_weights_path '../saved_models/LLS3D_Mitochondria/saved_model/weights_10000.h5'
 
-# ------------------------------- examples2 3D Confocal -------------------------------
+# # ------------------------------- examples2 3D Confocal -------------------------------
 
 python Infer_3D.py --num_seg_window_z 2 --num_seg_window_x 2 --num_seg_window_y 2 \
                    --background 0 --input_dir '../saved_models/confocal3D_ActinRing/test_data/*' \
@@ -40,3 +40,8 @@ python Infer_3D.py --num_seg_window_z 2 --num_seg_window_x 2 --num_seg_window_y 
                    --background 0 --input_dir '../saved_models/confocal3D_Microtubule/test_data/*' \
                    --load_weights_path '../saved_models/confocal3D_Microtubule/saved_model/weights_10000.h5' \
                    --Fourier_damping_flag 0 --upsample_flag 1
+
+# ------------------------------- examples3 3D LLS-SIM -------------------------------
+python Infer_3D.py --input_dir '../saved_models/LLS-SIM3D_F-actin/test_data/*.tif' \
+                   --load_weights_path '../saved_models/LLS-SIM3D_F-actin/saved_model/Lifeact_model.h5' \
+                    --num_seg_window_x 3 --num_seg_window_z 3 --num_seg_window_y 3 --Fourier_damping_flag 0

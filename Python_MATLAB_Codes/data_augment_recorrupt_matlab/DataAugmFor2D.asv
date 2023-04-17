@@ -1,10 +1,10 @@
-function DataAugmFor2D(DataPath,bg,est_beta2,beta1,beta2,alpha)
+function DataAugmFor2D(DataPath,beta1,beta2,alpha,bg,est_beta2)
 
-if nargin<3,est_beta2=1;end
-if nargin<2,bg=100;end
-if nargin<6,alpha=[0.5,1.5];end
-if nargin<5,beta2=[10,15];end
-if nargin<4,beta1=[0.5,1.5];end
+if nargin<6,est_beta2=1;end
+if nargin<5,bg=100;end
+if nargin<4,alpha=[0.5,1.5];end
+if nargin<3,beta2=[10,15];end
+if nargin<2,beta1=[0.5,1.5];end
 
 % -----------------------------------------------------------------------------
 %   generate 2D dataset for ZS-DeconvNet
@@ -20,7 +20,7 @@ if nargin<4,beta1=[0.5,1.5];end
 %% Estimation of beta2
 ImgList = XxSort(XxDir(DataPath, '*'));
 cell_num = length(ImgList);
-thresh = 0.005; % change the threshold value to adjust the estimation mask. Smaller thresh is safer for extracting background, but too small value will lead to NaN
+thresh = 0.03;
 var_list = [];
 if est_beta2
     for i = 1:cell_num
@@ -35,12 +35,12 @@ if est_beta2
         data = single(data);
 
         mask = data-bg;
-        mask = XxNorm(mask,0.1,99.9);
-        mask = imgaussfilt(mask,5);
+        mask = prctile(mask,0.1,0.999);
+        gs_filter = fspecial('gaussian',5);
+        mask = conv2(mask,gs_filter,'same');
         mask = XxNorm(mask);
         mask(mask>thresh) = 0;
         mask = logical(mask);
-        XxWriteTiff(uint16(65535*mask),['D:\check\' num2str(i) '.tif'])
 
         data = data.*mask;
         data = data(:);
@@ -52,7 +52,7 @@ if est_beta2
     var_list(var_list>var_list_mean+var_list_std) = [];
     var_list(var_list<var_list_mean-var_list_std) = [];
     beta2 = mean(var_list);
-    beta2 = [0.8*beta2,1.2*beta2];
+    beta2 = [0.8*]
 end
 
 %% set path and segmentation parameters 

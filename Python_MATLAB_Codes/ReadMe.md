@@ -1,6 +1,6 @@
 <h1> ZS-DeconvNet </h1>
 
-This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-supervised deep-learning tool for instant denoising and super-resolution in optical fluorescence microscopy. This package includes the Python implementation of training and inference, MATLAB implementation of data augmentation, as well as some demo data and pre-trained network models.
+This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-supervised deep-learning tool for instant denoising and super-resolution in optical fluorescence microscopy. This package includes the Python implementation of training and inference, and MATLAB implementation of data augmentation and simulation of raw 3D SIM images of beads.
 
 <h2> Content </h2>
 
@@ -10,19 +10,24 @@ This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-superv
   <li><a href="#Data Pre-processing">3. Training dataset generation</a></li>
   <li><a href="#Implementation of Python code1">4. Train a new model</a></li>
   <li><a href="#Implementation of Python code2">5. Test a well-trained model</a></li>
+  <li><a href="#Simu 3D SIM">6. Generate raw 3D SIM images of beads</a></li>
 </ul>
 
 <hr>
 
 <h2 id="File structure">1. File structure</h2>
 
-- `./saved_models` includes pre-trained models for testing, and for each modality and structure `xx`:
-  - <code>./saved_models/xx/saved_model</code> includes corresponding pre-trained model and inference result
-  - <code>./saved_models/xx/test_data</code> includes raw test data
-- <code>./data_augment_recorrupt_matlab</code> includes the MATLAB codes for generating training datasets
+- <code>./data_augment_recorrupt_matlab</code> includes the MATLAB codes for generating training datasets and simulation of raw 3D SIM images of beads
 - <code>./train_inference_python</code> includes the Python codes of training and inference, and the required dependencies
   - <code>./train_inference_python/models</code> includes the optional models
   - <code>./train_inference_python/utils</code> is the tool package
+
+It is recommended to download the demo test data and pre-trained models `saved_models` from [our open-source datasets](https://drive.google.com/drive/folders/1XAOuLYXYFCxlElRwvik_fs7TqZlRixGv?usp=sharing), and place it under the same folder so that:
+
++ `./saved_models` includes pre-trained models for testing, and for each modality and structure `xx`:
+  
+  - `./saved_models/xx/saved_model` includes corresponding pre-trained model and inference result
+  - `./saved_models/xx/test_data` includes raw test data
 
 <hr>
 
@@ -61,7 +66,7 @@ $ conda install cudnn==8.2.1
 
 <h2 id="Data pre-processing">3. Training dataset generation</h2>
 
-+ Prepare a folder of raw data. Download our open-source raw data of various modalities or use your own raw data. 
++ Prepare a folder of raw data. Download [our open-source raw data with corresponding PSF](replace_with_zenodo_path) of various modalities or use your own raw data. 
 
 + Open `./data_augment_recorrupt_matlab/demo_augm.m` and replace the parameter `data_folder` with your raw data directory. 
 
@@ -81,7 +86,7 @@ To train a new model, you need to:
 + Run it in your terminal.
 + The result wills be saved to <code>./your_saved_models/</code>.
 + Run <code>tensorboard --logdir [save_weights_dir]/[save_weights_name]/graph</code> to monitor the training process via tensorboard if needed.
-+ Other detailed description of each input argument of the python codes can be found in the comments of `./train_inference_python/train_demo_2D.sh` or `train_inference_python/train_demo_3D.sh`.
++ Other **detailed description of each input argument of the python codes** can be found in the comments of `./train_inference_python/train_demo_2D.sh` or `train_inference_python/train_demo_3D.sh`.
 
 <hr>
 
@@ -92,3 +97,12 @@ To test a well-trained ZS-DeconvNet model, you should:
 + Change the weight paths in <code>./train_inference_python/infer_demo_2D.sh</code> or <code>./train_inference_python/infer_demo_3D.sh</code> accordingly, or just use the default options given by us. 
 + Run it in your terminal.
 + The output will be saved to the folder where you load weights, e.g., if you load weights from <code>./train_inference_python/saved_models/.../weights_40000.h5</code>, then the output will be saved to <code>./train_inference_python/saved_models/.../Inference/</code>.
+
+<hr>
+
+<h2  id="Simu 3D SIM">6. Generate raw 3D SIM images of beads</h2>
+
+For researchers who cannot get access to the acquired 3D-SIM PSF, we provide a MATLAB script to generate raw 3D-SIM images of a simulated bead given the excitation NA, experimental PSF/OTF of the imaging system, excitation lambda, and pixel size. After 3D-SIM reconstruction via either commercial or open-source software, the simulated SR-SIM image stack of beads can be used as PSF input to our ZS-DeconvNet.
+
++ Run `./data_augment_recorrupt_matlab/demo_simu_SIM.m` and the generated raw 3D-SIM images of a simulated bead `img_sim` will be saved to your MATLAB workspace. 
++ Detailed descriptions of parameters is given in the comments of `./data_augment_recorrupt_matlab/demo_simu_SIM.m`. You can change them according to your needs.
