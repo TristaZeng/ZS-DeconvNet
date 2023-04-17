@@ -11,8 +11,7 @@ You can follow the instructions below to install the plugin:
 - Restart Fiji.
 
 - Start the ZS-DeconvNet Fiji Plugin:
-  
-  !["Access to ZS-DeconvNet Fiji Plugin"](./readme_imgs/access.png "Access to ZS-DeconvNet Fiji Plugin")
+
 
 ****
 
@@ -26,7 +25,6 @@ The ZS-DeconvNet Fiji plugin was developed based on TensorFlow-Java 1.15.0, whic
 - Wait until a message pops up telling you that the library was installed.
 - Restart Fiji.
 
-![Edit > Option > Tensorflow](./readme_imgs/tensorflow.png)
 
 ****
 
@@ -52,16 +50,13 @@ Given a pre-trained ZS-DeconvNet model and an image or stack to be processed, th
   | Show progress dialog               | Yes           | Tick if you want to see the progress bar and the time elapse of image processing.                                                                                                                                                                                                                                                                                                                                                                           |
   | Show denoise result                | No            | Tick if you want to see the denoised output.                                                                                                                                                                                                                                                                                                                                                                                                                |
   
-  ![Predict Parameter](./readme_imgs/predict.png "Predict Parameter")
   
   Please note that when using 3D ZS-DeconvNet model, make sure the third
   dimension of the stack is matched with `3[153]` dimension of the model:
-  
-  ![Remap Parameter](./readme_imgs/remap.png "Remap Parameter")
+
 
 - Image processing with status bar shown in the message box (if select Show progress dialog).
-  
-  ![UI of Predict](./readme_imgs/predict_progress.png "UI of Predict")
+
 
 - The denoised (if select Show denoising result) and deconvolved output will pop out in separate Fiji windows automatically. Then the processed images or stacks could be viewed, manipulated, and saved via Fiji.
 
@@ -75,7 +70,6 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
 
 - Start the plugin by **Plugins > ZS-DeconvNet > train on augmented data** and select the folders containing input images and GT images.
   
-  ![Train on augmented data Parameter](./readme_imgs/train_on_augmented_img.png "Train on augmented data Parameter")
 
 - Select the network type, i.e., 2D ZS-DeconvNet or 3D ZS-DeconvNet, the PSF file used for calculating deconvolution loss and choose training hyper-parameters, which include total epochs, iteration number per epoch, batch size, and initial learning rate. **Make sure that the PSF file has the correct dxy and dz. We have given an interpolation method in our Python training code to adjust dxy and dz, and you can make use of it. It is also recommended that you normalize the PSF by dividing its summation first.** A detailed description table of these hyper-parameters is shown below:
   
@@ -98,17 +92,11 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
   | Initial learning rate                                                      | $0.5\times 10^{-4}$ | A higher initial learning rate typically leads to faster convergence of the model, while destabilizes the training process.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 - Click OK to start training. A message box containing training information will pop up, and three preview windows will be displayed after each epoch, showing the current input images, denoised output images and deconvolution output images.
-  
-  ![Train progress](./readme_imgs/train_progress.png "Train progress")
-  
-  ![Train preview](./readme_imgs/train_preview.png "Train preview")
 
 - Three types of exit:
   (i) Press **Cancel > Close** to enforce an exit if you don't want to train or save this model.
   (ii) Press **Finish Training** for an early stopping. A window containing model information (Overview, Metadata, Inputs & Outputs, Training) will pop up and you can save the model by **File actions > Save to..**.
   (iii) After the training is completed, a window containing model information (Overview, Metadata, Inputs & Outputs, Training) will pop up and you can save the model by **File actions > Save to..**.
-  
-  ![](D:\ZS_DeconvNet\Source_codes_and_Fiji_plugin\ZS-DeconvNet_Fiji_Plugin\readme_imgs\save_model.png)
   
   Of note, you can also press **Export Model** during training to export the lastest saved model without disposing the training progress.
 
@@ -117,8 +105,6 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
 + Open the image or stack to be used for training in Fiji and start the ZS-DeconvNet plugin by clicking **Plugins > ZS-DeconvNet > train on opened img**.
 
 + For 2D ZS-DeconvNet training by the command of **train on opened images**, three extra recorruption-related parameters of $\alpha$, $\beta _1$, and $\beta _2$ are tuneable, where $\alpha$ and $\beta _1$ are set as [1, 2] and [0.5, 1.5] by default, and $\beta _2$ should be set around the standard deviation of the camera background, which could be pre-calibrated from blank frames or calculated from empty regions of the training data. The background value of the image or stack  and the patch shape will also be needed for data generation. A detailed description table of these hyper-parameters is shown in [the tutorial](https://tristazeng.github.io/ZS-DeconvNet-page/Tutorial/) of our website.
-  
-  ![Train on opened img Parameter](./readme_imgs/train_on_opened_img.png "Train on opened img Parameter")
 
 + Instructions for training and saving model are the same as 4.1.
 
