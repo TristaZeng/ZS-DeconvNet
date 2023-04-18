@@ -6,16 +6,19 @@
 
 You can follow the instructions below to install the plugin:
 
-- Copy `./Fiji-plugin/jars/*` and `./Fiji-plugin/plugins/*` to your root path of Fiji `/*/Fiji.app/`.
+- Copy `./jars/*` and `./plugins/*` to your root path of Fiji `[your root path of Fiji]/Fiji.app/`.
 
 - Restart Fiji.
 
 - Start the ZS-DeconvNet Fiji Plugin:
 
+<div align=center><img src="./readme_imgs/access.png" alt="Access to ZS-DeconvNet Fiji Plugin" />
+
+If you run into problems running Fiji on workstations with Windows system, please try copying `[your root path of Fiji]/Fiji.app/lib/win64/tensorflow_jni.dll` to `C:/Windows/System32/`.
+
+We mainly developed and tested the ZS-DeconvNet Fiji plugin on workstations of Linux and Windows operating system equipped with Nvidia graphics cards. Because TensorFlow-GPU package is currently incompatible with MacOS, we are sorry that MacBook users can only use the TensorFlow-CPU to run our ZS-DeconvNet Fiji plugin at present, which is relatively inefficient compared to Nvidia GPU-based computation. We’ll be looking for the solutions and trying to make our plugin compatible with MacBook for higher efficiency in the future.
 
 ****
-
-This Fiji plugin can work on workstations with Linux and Windows operating system, but not MacOS. Because TensorFlow-Java package cannot be installed on MacOS, which is the key dependent package of ZS-DeconvNet. We'll be looking for the solutions and trying to make our plugin compatible with MacOS someday.
 
 ## 2. Set CPU/GPU and TensorFlow version
 
@@ -25,6 +28,7 @@ The ZS-DeconvNet Fiji plugin was developed based on TensorFlow-Java 1.15.0, whic
 - Wait until a message pops up telling you that the library was installed.
 - Restart Fiji.
 
+<div align=center><img src="./readme_imgs/tensorflow.png" alt="Edit > Option > Tensorflow" />
 
 ****
 
@@ -54,11 +58,25 @@ Given a pre-trained ZS-DeconvNet model and an image or stack to be processed, th
   Please note that when using 3D ZS-DeconvNet model, make sure the third
   dimension of the stack is matched with `3[153]` dimension of the model:
 
+<div align=center><img src="./readme_imgs/predict.png" alt="Predict Parameter" />
 
 - Image processing with status bar shown in the message box (if select Show progress dialog).
 
+ <div align=center> <img src="./readme_imgs/predict_progress.png" alt="UI of Predict" />
 
 - The denoised (if select Show denoising result) and deconvolved output will pop out in separate Fiji windows automatically. Then the processed images or stacks could be viewed, manipulated, and saved via Fiji.
+
+Optional Fourier Damping post-processing used to suppress the stripy artifacts in LLS can be done by:
+
+- Open Fiji and choose the images to be processed.
+
+- Click **Plugins > ZS-DeconvNet > Fourier damping**
+
+  <div align=center> <img src="./readme_imgs/Fourier_damping.png" alt="Fourier damping" />
+
+- Adjust the width (green bar) and length (magenta bar) parameters:
+
+  <div align=center> <img src="./readme_imgs/processed_FFT.png" alt="processed FFT" width="50%"/>
 
 ****
 
@@ -70,8 +88,9 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
 
 - Start the plugin by **Plugins > ZS-DeconvNet > train on augmented data** and select the folders containing input images and GT images.
   
+  <div align=center> <img src="./readme_imgs/train_on_augmented_img.png" alt="Train on augmented data Parameter" />
 
-- Select the network type, i.e., 2D ZS-DeconvNet or 3D ZS-DeconvNet, the PSF file used for calculating deconvolution loss and choose training hyper-parameters, which include total epochs, iteration number per epoch, batch size, and initial learning rate. **Make sure that the PSF file has the correct dxy and dz. We have given an interpolation method in our Python training code to adjust dxy and dz, and you can make use of it. It is also recommended that you normalize the PSF by dividing its summation first.** A detailed description table of these hyper-parameters is shown below:
+- Select the network type, i.e., 2D ZS-DeconvNet or 3D ZS-DeconvNet, the PSF file used for calculating deconvolution loss and then click `Advanced training options` to choose training hyper-parameters, which include total epochs, iteration number per epoch, batch size, and initial learning rate. **Make sure that the PSF file has the correct dxy and dz. We have given an interpolation method in our Python training code to adjust dxy and dz, and you can make use of it. It is also recommended that you normalize the PSF by dividing its summation first.** A detailed description table of these hyper-parameters is shown below:
   
   | Hyper-parameter                                                            | Suggested value     | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
   |:--------------------------------------------------------------------------:|:-------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
@@ -91,23 +110,48 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
   | Patch shape                                                                | 128                 | The patch size determines the image shape after data augmentation, which may affect the total training time and final performance of the trained network models.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
   | Initial learning rate                                                      | $0.5\times 10^{-4}$ | A higher initial learning rate typically leads to faster convergence of the model, while destabilizes the training process.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
+  <div align=center> <img src="./readme_imgs/train_on_augmented_img_advanced_options.png" alt="Train on augmented data Advanced Parameter" />
+
 - Click OK to start training. A message box containing training information will pop up, and three preview windows will be displayed after each epoch, showing the current input images, denoised output images and deconvolution output images.
+
+<div align=center> <img src="./readme_imgs/train_progress.png" alt="Train progress"  width="80%"/>
+
+- Click `Preview` and three preview windows will be displayed, showing the current input images, denoised output images and deconvolution output images.
+
+   <div align=center> <img src="./readme_imgs/train_preview.png" alt="Train preview" width="80%"/>
 
 - Three types of exit:
   (i) Press **Cancel > Close** to enforce an exit if you don't want to train or save this model.
-  (ii) Press **Finish Training** for an early stopping. A window containing model information (Overview, Metadata, Inputs & Outputs, Training) will pop up and you can save the model by **File actions > Save to..**.
-  (iii) After the training is completed, a window containing model information (Overview, Metadata, Inputs & Outputs, Training) will pop up and you can save the model by **File actions > Save to..**.
+  (ii) Press **Finish Training** for an early stopping. A window will pop up and you can change the save path and filename.
+  (iii) After the training is completed, a window will automatically pop up and you can change the save path and filename.
+
+  <div align=center> <img src="./readme_imgs/save_model.png" alt="Save model" />
   
   Of note, you can also press **Export Model** during training to export the lastest saved model without disposing the training progress.
+
+- The model saved in training process can be used in inference process directly.
 
 ### 4.2 Train 2D/3D ZS-DeconvNet on opened images
 
 + Open the image or stack to be used for training in Fiji and start the ZS-DeconvNet plugin by clicking **Plugins > ZS-DeconvNet > train on opened img**.
 
-+ For 2D ZS-DeconvNet training by the command of **train on opened images**, three extra recorruption-related parameters of $\alpha$, $\beta _1$, and $\beta _2$ are tuneable, where $\alpha$ and $\beta _1$ are set as [1, 2] and [0.5, 1.5] by default, and $\beta _2$ should be set around the standard deviation of the camera background, which could be pre-calibrated from blank frames or calculated from empty regions of the training data. The background value of the image or stack  and the patch shape will also be needed for data generation. A detailed description table of these hyper-parameters is shown in [the tutorial](https://tristazeng.github.io/ZS-DeconvNet-page/Tutorial/) of our website.
+<div align=center> <img src="./readme_imgs/train_on_opened_img.png" alt="Train on opened img Parameter" />
+
++ For 2D ZS-DeconvNet training by the command of **train on opened images**, three extra recorruption-related parameters of $\alpha$, $\beta _1$, and $\beta _2$ are tuneable, where $\alpha$ and $\beta _1$ are set as [1, 2] and [0.5, 1.5] by default, and $\beta _2$ should be set around the standard deviation of the camera background, which could be pre-calibrated from blank frames or calculated from empty regions of the training data by choosing
+`Estimate beta2 according to dataset`. The background value of the image or stack and the patch shape will also be needed for data generation. 
+
+<div align=center> <img src="./readme_imgs/train_on_opened_img_advanced_options.png" alt="Train on opened img Advanced Parameter" />
 
 + Instructions for training and saving model are the same as 4.1.
 
-### 4.3 Extracting after training
+## 5. Updating log
+### version 1.1
+1. Fix the problem in normalization of PSF File.
+2. Change the exported model file from bioimage.io format to SaveModelBundle format, so that the model saved in training
+   process can be used in predicting directly.
 
-The model saved via **File actions > Save to..** is in BioImage format. For inference with ZS-DeconvNet plugin, you need to extract this file and find `./tf_saved_model_bundle.zip`, which is the zip file needed in **Plugins > ZS-DeconvNet > predict**. 
+### version 1.2
+1. Automatically determine the batch size parameter in predicting process.
+2. Move the advanced parameters of training into an additional window.
+3. Add an option for automatically estimating beta2 from the opened images for training.
+4. Add `Fourier Damping` function.
