@@ -1,2 +1,0 @@
-Due to the file size limit, we cannot upload the Fiji plugin and its dependent packages on Github.
-Please download from 
