@@ -1,1 +1,0 @@
-Download our raw data and corresponding PSFs from Zenodo: 
