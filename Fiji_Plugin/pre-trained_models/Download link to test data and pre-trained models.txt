@@ -1,2 +1,0 @@
-Due to the file size limit, we cannot upload the test data and corresponding pre-trained models of our Fiji plugin on Github.
-Please download from https://drive.google.com/drive/folders/14Fh2IDcFykoNf7JvbXJIARi-FukW2rqC?usp=sharing.
