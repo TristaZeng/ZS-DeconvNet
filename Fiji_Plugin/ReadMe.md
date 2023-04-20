@@ -4,6 +4,8 @@
 
 ## 1. Installation
 
+Due to file size limit, we cannot upload our plugin on Github. You can download by this [link](https://drive.google.com/drive/folders/1nJoj9Ljx2MNXa-lCOGIzVj_1BT-xrp2F?usp=sharing).
+
 You can follow the instructions below to install the plugin:
 
 - Copy `./jars/*` and `./plugins/*` to your root path of Fiji `[your root path of Fiji]/Fiji.app/`.
