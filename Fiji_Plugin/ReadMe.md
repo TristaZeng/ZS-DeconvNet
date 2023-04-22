@@ -2,6 +2,10 @@
 
 *** 
 
+Reference: 
+[CSBDeep](https://github.com/CSBDeep/CSBDeep_fiji)
+[N2V](https://github.com/juglab/N2V_fiji)
+
 ## 1. Installation
 
 Due to file size limit, we cannot upload our plugin on Github. You can download by this [link](https://drive.google.com/drive/folders/1nJoj9Ljx2MNXa-lCOGIzVj_1BT-xrp2F?usp=sharing).
@@ -16,8 +20,6 @@ You can follow the instructions below to install the plugin:
 
 <div align=center><img src="./readme_imgs/access.png" alt="Access to ZS-DeconvNet Fiji Plugin" /></div>
 
-If you run into problems running Fiji on workstations with Windows system, please try copying `[your root path of Fiji]/Fiji.app/lib/win64/tensorflow_jni.dll` to `C:/Windows/System32/`.
-
 We mainly developed and tested the ZS-DeconvNet Fiji plugin on workstations of Linux and Windows operating system equipped with Nvidia graphics cards. Because TensorFlow-GPU package is currently incompatible with MacOS, we are sorry that MacBook users can only use the TensorFlow-CPU to run our ZS-DeconvNet Fiji plugin at present, which is relatively inefficient compared to Nvidia GPU-based computation. We’ll be looking for the solutions and trying to make our plugin compatible with MacBook for higher efficiency in the future.
 
 ****
@@ -29,6 +31,7 @@ The ZS-DeconvNet Fiji plugin was developed based on TensorFlow-Java 1.15.0, whic
 - Open **Edit > Options > Tensorflow**, and choose the version matching your model or setting.
 - Wait until a message pops up telling you that the library was installed.
 - Restart Fiji.
+- If you run into problems running Fiji with GPU on workstations with Windows system, please try copying `[your root path of Fiji]/Fiji.app/lib/win64/tensorflow_jni.dll` to `C:/Windows/System32/`.
 
 <div align=center><img src="./readme_imgs/tensorflow.png" alt="Edit > Option > Tensorflow" /></div>
 
