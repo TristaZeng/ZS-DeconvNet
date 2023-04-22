@@ -2,12 +2,6 @@
 
 *** 
 
-Reference: 
-
-[CSBDeep](https://github.com/CSBDeep/CSBDeep_fiji)
-
-[N2V](https://github.com/juglab/N2V_fiji)
-
 ## 1. Installation
 
 Due to file size limit, we cannot upload our plugin on Github. You can download by this [link](https://drive.google.com/drive/folders/1nJoj9Ljx2MNXa-lCOGIzVj_1BT-xrp2F?usp=sharing).
@@ -151,6 +145,8 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
 
 + Instructions for training and saving model are the same as 4.1.
 
+****
+
 ## 5. Updating log
 
 ### version 1.1
@@ -165,3 +161,9 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
 2. Move the advanced parameters of training into an additional window.
 3. Add an option for automatically estimating beta2 from the opened images for training.
 4. Add `Fourier Damping` function.
+
+****
+
+## 6. Acknowledgements
+
+This plugin used [CSBDeep](https://github.com/CSBDeep/CSBDeep_fiji) and [N2V](https://github.com/juglab/N2V_fiji) as references. We thank the authors for sharing their codes.
