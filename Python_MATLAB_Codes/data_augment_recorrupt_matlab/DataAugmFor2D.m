@@ -40,7 +40,6 @@ if est_beta2
         mask = XxNorm(mask);
         mask(mask>thresh) = 0;
         mask = logical(mask);
-        XxWriteTiff(uint16(65535*mask),['D:\check\' num2str(i) '.tif'])
 
         data = data.*mask;
         data = data(:);
