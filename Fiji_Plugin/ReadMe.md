@@ -147,7 +147,21 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
 
 ****
 
-## 5. Updating log
+## 5. Convert python model to plugin format
+
+To transfer a saved model to .zip format to use in ZS-DeconvNet plugin, please follow the instructions below:
+
++ Create a new environment by running `conda create -n tensorflow1 python=3.7` in your terminal.
+
++ Activate the environment by `conda activate tensorflow1`.
+
++ Install the packages by `pip install -r requirements.txt`.
+
++ Run ` ./TransferTFModelToPluginFormat/TransferZSDeconv2DModelToPluginFormat.py` or `./TransferTFModelToPluginFormat/TransferZSDeconv3DModelToPluginFormat.py` in your created environment according to the model type (2D or 3D) you want to convert. Remember to set `out_path` and `load_weights_path` as your desired output path and your root path of saved python model.
+
+****
+
+## Updating log
 
 ### version 1.1
 
@@ -164,6 +178,6 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
 
 ****
 
-## 6. Acknowledgements
+## Acknowledgements
 
 This plugin used [CSBDeep](https://github.com/CSBDeep/CSBDeep_fiji) and [N2V](https://github.com/juglab/N2V_fiji) as references. We thank the authors for sharing their codes.
