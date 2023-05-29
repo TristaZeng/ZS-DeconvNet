@@ -1,0 +1,4 @@
+cd C:/Users/Admin/Git/repo/ZS-DeconvNet/Fiji_Plugin/TransferTFModelToPluginFormat
+
+# python TransferZSDeconv2DModelToPluginFormat.py --load_weights_path 'D:/ZS_DeconvNet/submit_NM_20230523/isotropic_concern_by_R3_fromNBT/SIM_MT/MT-deconv-rotation-ImgJointNorm&Recorrupt/MT-weightes-anti-rotation.h5' --out_path 'D:/ZS_DeconvNet/submit_NM_20230523/isotropic_concern_by_R3_fromNBT/SIM_MT/MT-deconv-rotation-ImgJointNorm&Recorrupt/MT-weightes-anti-rotation'
+python TransferZSDeconv3DModelToPluginFormat.py --load_weights_path 'C:/Users/Admin/Git/repo/attachments_to_repos/saved_models/LLS3D_Mitochondria/saved_model/weights_10000.h5' --out_path 'C:/Users/Admin/Git/repo/attachments_to_repos/saved_models/LLS3D_Mitochondria/saved_model/weights_10000'

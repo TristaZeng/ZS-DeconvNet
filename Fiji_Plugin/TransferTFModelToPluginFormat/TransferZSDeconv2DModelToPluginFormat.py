@@ -10,29 +10,20 @@ import shutil
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--load_weights_path", type=str,
-                        default='./2D_model/Microtubules_channel128.h5')
-    parser.add_argument("--out_path", type=str, default='./2D_model/ZS-DeconvNet-2D-SIM-Microtubules')
-    parser.add_argument("--insert_xy", type=int,
-                        default=5)  # pad blank edge of 5 pixels along the input image to make its size to 512
+    parser.add_argument("--load_weights_path", type=str)
+    parser.add_argument("--out_path", type=str)
     parser.add_argument("--upsample_flag", type=int, default=1)  # whether the model has an upsampling function
     parser.add_argument("--NSM_flag", type=int, default=0)  # whether the model apply the NS Module
-    parser.add_argument("--h", type=int, default=502)  # input image height
-    parser.add_argument("--w", type=int, default=502)  # input image width
-
+    
     args = parser.parse_args()
 
     load_weights_path = args.load_weights_path
     out_path = args.out_path
-    insert_xy = args.insert_xy
     upsample_flag = args.upsample_flag
     NSM_flag = args.NSM_flag
-    h = args.h
-    w = args.w
-
+   
     UNet = twostage_Unet.Unet
-    model = UNet([h + 2 * insert_xy, w + 2 * insert_xy, 1], NSM_flag=NSM_flag, upsample_flag=upsample_flag,
-                 insert_xy=insert_xy)
+    model = UNet([512, 512, 1], NSM_flag=NSM_flag, upsample_flag=upsample_flag)
     # Load weights
     model.load_weights(load_weights_path)
 

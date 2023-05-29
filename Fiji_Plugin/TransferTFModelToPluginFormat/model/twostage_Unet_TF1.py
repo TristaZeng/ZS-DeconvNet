@@ -10,11 +10,9 @@ from keras import initializers
 import tensorflow as tf
 
 
-# twostage_UNet input_channels=1, cut=6, upsample_flag=1, NSM_flag=0
 
-def Unet(input_shape, NSM_flag, upsample_flag, insert_xy, conv_block_num=4, conv_num=3):
+def Unet(input_shape, NSM_flag, upsample_flag, conv_block_num=4, conv_num=3):
     input1 = Input(input_shape)
-    _, h, w, _ = input1.shape
 
     # OTF Attenuation
     if NSM_flag:

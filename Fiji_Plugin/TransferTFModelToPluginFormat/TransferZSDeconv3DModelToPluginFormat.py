@@ -10,32 +10,19 @@ import shutil
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--load_weights_path", type=str, default='./3D_model/1224-mitosis-Mito-cell3_560_10000.h5')
-    parser.add_argument("--out_path", type=str, default='./3D_model/ZS-DeconvNet-3D-LLSM-Mito')
-    parser.add_argument("--insert_xy", type=int,
-                        default=8)  # pad blank edge along the input image
-    parser.add_argument("--insert_d", type=int,
-                        default=1)  # pad blank edge along z-axis
+    parser.add_argument("--load_weights_path", type=str)
+    parser.add_argument("--out_path", type=str)
     parser.add_argument("--upsample_flag", type=int, default=0)  # whether the model has an upsampling function
     parser.add_argument("--NSM_flag", type=int, default=0)  # whether the model apply the NS Module
-    parser.add_argument("--h", type=int, default=357)  # input image height
-    parser.add_argument("--w", type=int, default=357)  # input image width
-    parser.add_argument("--d", type=int, default=151)  # input image width
 
     args = parser.parse_args()
 
     load_weights_path = args.load_weights_path
     out_path = args.out_path
-    insert_xy = args.insert_xy
-    insert_d = args.insert_d
     upsample_flag = args.upsample_flag
     NSM_flag = args.NSM_flag
 
-    h = args.h
-    w = args.w
-    d = args.d
-
-    model = twostage_RCAN3D.RCAN3D_prun([h + 2 * insert_xy, w + 2 * insert_xy, d + 2 * insert_d, 1], NSM_flag=NSM_flag,
+    model = twostage_RCAN3D.RCAN3D_prun([None, None, None, 1], NSM_flag=NSM_flag,
                                         upsample_flag=upsample_flag)
     ## Load weights
     model.load_weights(load_weights_path)

@@ -24,6 +24,7 @@ We mainly developed and tested the ZS-DeconvNet Fiji plugin on workstations of L
 
 The ZS-DeconvNet Fiji plugin was developed based on TensorFlow-Java 1.15.0, which is compatible with CUDA version of 10.1 and cuDNN version of 7.5.1. The default option is to use CPU, but if you would like to run with GPU, or process models with a different TensorFlow version, please follow these steps:
 
+- Make sure you installed your desired CUDA and cuDNN version, and that your GPU is compatible with the versions you chose.
 - Open **Edit > Options > Tensorflow**, and choose the version matching your model or setting.
 - Wait until a message pops up telling you that the library was installed.
 - Restart Fiji.

@@ -36,55 +36,9 @@ def ResidualGroup(input, channel, n_RCAB=5):
     return conv
 
 
-# NSM_flag=0
-def RCAN3D(input_shape, NSM_flag=0, upsample_flag=0, insert_slices=2, insert_xy=8,
-           n_ResGroup=2, n_RCAB=4):
-    inputs = Input(input_shape)
-    _, h, w, d, _ = inputs.shape
-
-    if NSM_flag:
-        NSM = NoiseSuppressionModule()
-        ns = NSM(inputs)
-        weighted = Conv3D(input_shape[3], kernel_size=1, padding='same')(inputs)
-        weighted = LeakyReLU(alpha=0.2)(weighted)
-        ns = ns + weighted
-    else:
-        ns = inputs
-    conv = Conv3D(64, kernel_size=3, padding='same')(ns)
-    res = conv
-    for _ in range(n_ResGroup):
-        conv = ResidualGroup(conv, 64, n_RCAB=n_RCAB)
-    conv = add([res, conv])
-
-    conv = Conv3D(256, kernel_size=3, padding='same')(conv)
-    conv = LeakyReLU(alpha=0.2)(conv)
-    conv = Conv3D(1, kernel_size=3, padding='same')(conv)
-    output1 = LeakyReLU(alpha=0.2)(conv)
-
-    conv = Conv3D(64, kernel_size=3, padding='same')(output1)
-    res = conv
-    for _ in range(n_ResGroup):
-        conv = ResidualGroup(conv, 64, n_RCAB=n_RCAB)
-    conv = add([res, conv])
-    # before_up = Lambda(slice)(conv)
-    if upsample_flag:
-        conv = Lambda(up_3d)(conv)
-        # conv = UpSampling3D(size=(2, 2, 1))(conv)
-    # up = Lambda(slice)(conv)
-    conv = Conv3D(256, kernel_size=3, padding='same')(conv)
-    conv = LeakyReLU(alpha=0.2)(conv)
-    conv = Conv3D(1, kernel_size=3, padding='same')(conv)
-    output2 = LeakyReLU(alpha=0.2)(conv)
-
-    # output1 = output1[:, insert_xy:h - insert_xy, insert_xy:w - insert_xy, insert_slices:d - insert_slices, :]
-    model = Model(inputs=inputs, outputs=[output1, output2])
-
-    return model
-
-def RCAN3D_prun(input_shape, NSM_flag=0, upsample_flag=0, insert_slices=2, insert_xy=8,
+def RCAN3D_prun(input_shape, NSM_flag=0, upsample_flag=0, 
                 n_ResGroup=2, n_RCAB=2):
     inputs = Input(input_shape)
-    _, h, w, d, _ = inputs.shape
 
     if NSM_flag:
         NSM = NoiseSuppressionModule()
@@ -120,7 +74,6 @@ def RCAN3D_prun(input_shape, NSM_flag=0, upsample_flag=0, insert_slices=2, inser
     conv = Conv3D(1, kernel_size=3, padding='same')(conv)
     output2 = LeakyReLU(alpha=0.2)(conv)
 
-    # output1 = output1[:, insert_xy:h - insert_xy, insert_xy:w - insert_xy, insert_slices:d - insert_slices, :]
     model = Model(inputs=inputs, outputs=[output1, output2])
 
     return model
