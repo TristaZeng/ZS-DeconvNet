@@ -1,6 +1,6 @@
 # Tutorial of Zero-Shot DeconvNet Fiji plugin
 
-*** 
+***
 
 ## 1. Installation
 
@@ -16,7 +16,7 @@ You can follow the instructions below to install the plugin:
 
 <div align=center><img src="./readme_imgs/access.png" alt="Access to ZS-DeconvNet Fiji Plugin" /></div>
 
-We mainly developed and tested the ZS-DeconvNet Fiji plugin on workstations of Linux and Windows operating system equipped with Nvidia graphics cards. Because TensorFlow-GPU package is currently incompatible with MacOS, we are sorry that MacBook users can only use the TensorFlow-CPU to run our ZS-DeconvNet Fiji plugin at present, which is relatively inefficient compared to Nvidia GPU-based computation. We’ll be looking for the solutions and trying to make our plugin compatible with MacBook for higher efficiency in the future.
+We mainly developed and tested the ZS-DeconvNet Fiji plugin on workstations of Linux and Windows operating system equipped with <b>Nvidia graphics cards</b>. Because TensorFlow-GPU package is currently incompatible with MacOS, we are sorry that MacBook users can only use the TensorFlow-CPU to run our ZS-DeconvNet Fiji plugin at present, which is relatively inefficient compared to Nvidia GPU-based computation. We’ll be looking for the solutions and trying to make our plugin compatible with MacBook for higher efficiency in the future.
 
 ****
 
@@ -40,7 +40,7 @@ Given a pre-trained ZS-DeconvNet model and an image or stack to be processed, th
 
 - Open the image or stack in Fiji and start ZS-DeconvNet plugin by Clicking **Plugins > ZS-DeconvNet > predict**.
 
-- Select the network model file, i.e., .zip file in the format of BioImage Model Zoo bundle. Of note, the model file could be trained and saved either by Python codes (see [this gist](https://gist.github.com/asimshankar/000b8d276f211f972168afa138eb3cc7)) or ZS-DeconvNet Fiji plugin, but has to be saved with TensorFlow environment <= 1.15.0.
+- Select the network model file, i.e., .zip file in the format of BioImage Model Zoo bundle. The model file could be trained and saved either by Python codes (follow the instructions in <b>5. Convert python model to plugin format</b>) or ZS-DeconvNet Fiji plugin.
 
 - Check inference hyper-parameters. The options and parameters here are primarily selected to properly normalize the input data (NormalizeInput, PercentileBottom, and PercentileTop), perform tiling prediction to save memory of CPUs or GPUs (Number of tiles, Overlap between tiles, and Batch size), and decide whether to show progress dialog and denoising results or not (Show progress dialog and Show denoising result). A detailed description table is shown below:
   
@@ -140,7 +140,7 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
 <div align=center> <img src="./readme_imgs/train_on_opened_img.png" alt="Train on opened img Parameter" /></div>
 
 + For 2D ZS-DeconvNet training by the command of **train on opened img**, three extra recorruption-related parameters of $\alpha$, $\beta _1$, and $\beta _2$ are tuneable, where $\alpha$ and $\beta _1$ are set as [1, 2] and [0.5, 1.5] by default, and $\beta _2$ should be set around the standard deviation of the camera background, which could be pre-calibrated from blank frames or calculated from empty regions of the training data by choosing
-  `Estimate beta2 according to dataset`. The background value of the image or stack and the total number of pairs after augmentation will also be needed for data generation. 
+  `Estimate beta2 according to dataset`. The background value of the image or stack and the total number of pairs after augmentation will also be needed for data generation.
 
 <div align=center> <img src="./readme_imgs/train_on_opened_img_advanced_options.png" alt="Train on opened img Advanced Parameter" /></div>
 
@@ -150,7 +150,7 @@ For ZS-DeconvNet model training, we provide two commands: **train on augmented d
 
 ## 5. Convert python model to plugin format
 
-To transfer a saved model to .zip format to use in ZS-DeconvNet plugin, please follow the instructions below:
+To transfer a ZS-DeconvNet model trained in Python to .zip format to use in ZS-DeconvNet plugin, please follow the instructions below:
 
 + Create a new environment by running `conda create -n tensorflow1 python=3.7` in your terminal.
 
@@ -167,8 +167,7 @@ To transfer a saved model to .zip format to use in ZS-DeconvNet plugin, please f
 ### version 1.1
 
 1. Fix the problem in normalization of PSF File.
-2. Change the exported model file from bioimage.io format to SaveModelBundle format, so that the model saved in training
-   process can be used in predicting directly.
+2. Change the exported model file from bioimage.io format to SaveModelBundle format, so that the model saved in training process can be used in predicting directly.
 
 ### version 1.2
 
@@ -176,6 +175,10 @@ To transfer a saved model to .zip format to use in ZS-DeconvNet plugin, please f
 2. Move the advanced parameters of training into an additional window.
 3. Add an option for automatically estimating beta2 from the opened images for training.
 4. Add `Fourier Damping` function.
+
+### version 1.3
+
+Modify the padding procedure to ensure a lateral padding of at least 16 pixels and axial padding of at least 4 slices.
 
 ****
 
