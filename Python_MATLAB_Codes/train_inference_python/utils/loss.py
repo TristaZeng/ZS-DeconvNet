@@ -59,7 +59,7 @@ def create_psf_loss(psf, TV_weight, Hess_weight, laplace_weight,
             laplace_loss = 0
             
         if l1_rate>0:
-            l1_loss = K.mean(y_pred)
+            l1_loss = K.mean(K.abs(y_pred))
         else:
             l1_loss = 0
 
