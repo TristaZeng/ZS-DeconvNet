@@ -65,7 +65,10 @@ if not os.path.exists(save_path):
 #                           select models and optimizer
 # --------------------------------------------------------------------------------
 modelFns = {'twostage_RCAN3D': twostage_RCAN3D.RCAN3D,
-            'twostage_Unet3D': twostage_Unet3D.Unet}
+            'twostage_Unet3D': twostage_Unet3D.Unet,
+            'twostage_RCAN3D_SIM':twostage_RCAN3D.RCAN3D_SIM,
+            'twostage_RCAN3D_SIM_compact':twostage_RCAN3D.RCAN3D_SIM_compact,
+            'twostage_RCAN3D_SIM_compact2':twostage_RCAN3D.RCAN3D_SIM_compact2}
 modelFN = modelFns[model]
 optimizer_g = optimizers.Adam(learning_rate=1e-4, beta_1=0.9, beta_2=0.999, decay=1e-5)
 

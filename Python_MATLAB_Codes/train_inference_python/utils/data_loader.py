@@ -16,12 +16,15 @@ def DataLoader(images_path, data_path, gt_path,
         img = np.array(imageio.mimread(path)).astype(np.float32)
         gt = np.array(imageio.mimread(path_gt)).astype(np.float32)
         
-        if norm_flag:
+        if norm_flag==1:
             img = prctile_norm(img)
             gt = prctile_norm(gt)
-        else:
+        elif norm_flag==0:
             img = img / 65535
             gt = gt / 65535
+        elif norm_flag==2:
+            img = img/np.max(img)
+            gt = gt/np.max(gt)
         
         image_batch.append(img)
         gt_batch.append(gt)
@@ -31,20 +34,3 @@ def DataLoader(images_path, data_path, gt_path,
     
     return image_batch, gt_batch
 
-def augment_img(img,mode):
-    if mode==1:
-        img = np.flipud(np.rot90(img))
-    elif mode==2:
-        img = np.flipud(img)
-    elif mode==3:
-        img = np.rot90(img,k=3)
-    elif mode==4:
-        img = np.flipud(np.rot90(img,k=2))
-    elif mode==5:
-        img = np.rot90(img)
-    elif mode==6:
-        img = np.rot90(img,k=2)
-    elif mode==7:
-        img = np.flipud(np.rot90(img,k=3))
-        
-    return img

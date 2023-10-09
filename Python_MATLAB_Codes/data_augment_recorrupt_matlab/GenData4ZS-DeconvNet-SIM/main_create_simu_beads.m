@@ -1,7 +1,8 @@
 clear;
 close all;
-cd 'C:\Users\Admin\Git\repo\ZS-DeconvNet\Python_MATLAB_Codes\data_augment_recorrupt_matlab';
+cd 'C:\Users\Admin\Git\repo\ZS-DeconvNet\Python_MATLAB_Codes\data_augment_recorrupt_matlab'; % change this path to your cloned path
 addpath(genpath('./XxUtils'));
+addpath(genpath('./GenData4ZS-DeconvNet-SIM'))
 
 % necessary field
 system_params = {};

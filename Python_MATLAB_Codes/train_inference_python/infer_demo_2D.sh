@@ -14,13 +14,12 @@
 
 # ------------------------------- examples -------------------------------
 
-cd C:/Users/Admin/Git/repo/ZS-DeconvNet-master/train_inference_python
 # WF lysosome
 python Infer_2D.py --input_dir '../saved_models/WF2D_Lysosome/test_data/NoisyInput.tif' \
                    --load_weights_path '../saved_models/WF2D_Lysosome/saved_model/weights_20000.h5' \
                     --num_seg_window_x 1
 
-# # SIM CCP
+# SIM CCP
 python Infer_2D.py --input_dir '../saved_models/SIM2D_CCP/test_data/*.tif' \
                    --load_weights_path '../saved_models/SIM2D_CCP/saved_model/weights_50000.h5' --insert_xy 0
 

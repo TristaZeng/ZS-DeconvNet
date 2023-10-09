@@ -1,18 +1,19 @@
 import argparse
-from models import twostage_RCAN3D, twostage_Unet3D
+from models import twostage_RCAN3D
 from tensorflow.keras import optimizers
 import glob
 import numpy as np
 import datetime
 from utils.utils import prctile_norm
 from utils.data_loader import DataLoader
+from utils.augment_sim_img import aug_sim_img_3D
 import tifffile as tiff
 from scipy.interpolate import interp1d
 import os
 import cv2
 import tensorflow as tf
 import math
-from utils.loss import create_NBR2NBR_loss, psf_estimator_3d, create_psf_loss_3D_NBR2NBR
+from utils.loss import create_psf_loss_3D, psf_estimator_3d
 import imageio
 from tensorflow.keras import backend as K
 
@@ -37,35 +38,38 @@ parser.add_argument("--lr_decay_factor", type=float, default=0.5)
 
 # about data
 parser.add_argument("--save_weights_dir", type=str, default="../your_saved_models/")
-parser.add_argument("--save_weights_suffix", type=str, default="_Hess0.1_MAE_up")
+parser.add_argument("--save_weights_suffix", type=str, default="_MAE_up")
 parser.add_argument("--psf_path", type=str)
 parser.add_argument("--data_dir", type=str) 
+parser.add_argument("--augment_flag", type=int, default=1)
+parser.add_argument("--norm_flag", type=int, default=2)
 parser.add_argument("--test_images_path", type=str)
 parser.add_argument("--folder", type=str) 
 parser.add_argument("--background", type=int, default=100) # set to the value you want to extract in test image
 
 parser.add_argument("--input_y", type=int, default=64)
 parser.add_argument("--input_x", type=int, default=64)
-parser.add_argument("--input_z", type=int, default=13)
+parser.add_argument("--input_z", type=int, default=7)
 parser.add_argument("--insert_z", type=int, default=2)
 parser.add_argument("--insert_xy", type=int, default=8)
 parser.add_argument("--batch_size", type=int, default=3)
-parser.add_argument("--dx", type=float, default=0.0926)
-parser.add_argument("--dz", type=float, default=0.3704)
-parser.add_argument("--dxpsf", type=float, default=0.0926)
-parser.add_argument("--dzpsf", type=float, default=0.05)
+parser.add_argument("--dx", type=float, default=0.0313/2)
+parser.add_argument("--dz", type=float, default=0.16)
+parser.add_argument("--dxpsf", type=float, default=0.0313/2)
+parser.add_argument("--dzpsf", type=float, default=0.16)
 parser.add_argument("--wavelength", type=int, default=488)
-parser.add_argument("--norm_flag", type=int, default=0)
 
 # about loss functions
 parser.add_argument("--mse_flag", type=int, default=0)
 parser.add_argument("--TV_weight", type=float, default=0)
-parser.add_argument("--Hess_weight", type=float, default=0.1)
+parser.add_argument("--Hess_weight", type=float, default=0)
 
 args = parser.parse_args()
 
 data_dir = args.data_dir
 folder = args.folder
+augment_flag = args.augment_flag
+norm_flag = args.norm_flag
 psf_path = args.psf_path
 save_weights_path = data_dir+folder 
 save_weights_suffix = args.save_weights_suffix
@@ -108,6 +112,17 @@ os.environ["CUDA_VISIBLE_DEVICES"] = gpu_id
 gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=gpu_memory_fraction)
 tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options))
        
+train_images_path = data_dir+folder+'/input'
+train_gt_path = data_dir+folder+'/gt'
+# augment data if required
+if augment_flag:
+    print('Augmenting...')
+    folder = folder+'_augmented'
+    aug_sim_img_3D(save_dir=data_dir+folder,
+                       input_dir=train_images_path,gt_dir=train_gt_path,
+                       patch_size=input_x,z_size=input_z)
+    print('Augmentation completed.')
+    
 # define and make paths
 save_weights_path = save_weights_dir + "/" + folder + "_" + model + save_weights_suffix
 train_images_path = data_dir + folder + "/input" 
@@ -153,8 +168,9 @@ bs,h,w,d = input_test.shape
 # --------------------------------------------------------------------------------
 #                           select models and optimizer
 # --------------------------------------------------------------------------------
-modelFns = {'twostage_RCAN3D':twostage_RCAN3D.RCAN3D,
-            'twostage_Unet3D':twostage_Unet3D.Unet}
+modelFns = {'twostage_RCAN3D':twostage_RCAN3D.RCAN3D_SIM,
+            'twostage_RCAN3D_compact':twostage_RCAN3D.RCAN3D_SIM_compact,
+            'twostage_RCAN3D_compact2':twostage_RCAN3D.RCAN3D_SIM_compact2}
 modelFN = modelFns[model]
 my_optimizer = optimizers.Adam(learning_rate=start_lr, beta_1=0.9, beta_2=0.999, decay=1e-5)
  
@@ -322,11 +338,14 @@ if os.path.exists(save_weights_path + '/weights_' + str(load_init_model_iter) + 
 else:
     load_init_model_iter = 0
 
-NBR2NBR_loss = create_NBR2NBR_loss(0,mse_flag)
-loss = create_psf_loss_3D_NBR2NBR(psf_g, mse_flag, batch_size, 
+loss = create_psf_loss_3D(psf_g, mse_flag, batch_size, 
     upsample_flag,TV_weight=TV_weight,Hess_weight=Hess_weight,
     insert_z=insert_z,insert_xy=insert_xy)
-g_loss = [NBR2NBR_loss,loss]
+if mse_flag:
+    g_loss = ['mean_squared_error',loss]
+else:
+    g_loss = ['mean_absolute_error',loss]
+
 
 g.compile(loss=g_loss, optimizer=my_optimizer)
 p.compile(loss=None, optimizer=my_optimizer)
@@ -443,17 +462,8 @@ for it in range(iterations-load_init_model_iter):
     insert_shape = np.zeros([batch_size,input_y+2*insert_xy,insert_xy,input_z+2*insert_z,1])
     input = np.concatenate((insert_shape,input,insert_shape),axis=2)
     gt = np.transpose(gt, (0, 3, 4, 2, 1))
-    input_G = np.zeros([batch_size,input_y+insert_xy*2,input_x+insert_xy*2,(input_z+insert_z)*2,1])
-    for z in range(insert_z,input_z*2+insert_z,2):
-        input_G[:,insert_xy:input_y+insert_xy,insert_xy:input_x+insert_xy,z,0] = gt[:,:,:,(z-insert_z)//2,0]
-        input_G[:,:,:,z+1,0] = input[:,:,:,(z+insert_z)//2,0]
-    
-    g_copy.set_weights(g.get_weights())
-    output_G = g_copy.predict(input_G)[0]
-    output_G = output_G[:,:,:,1::2,:]-output_G[:,:,:,0::2,:]
-    gt = [np.concatenate((gt,output_G),axis=4),np.concatenate((gt,output_G),axis=4)]
-    
-    loss_total = g.train_on_batch(input, gt)
+
+    loss_total = g.train_on_batch(input, [gt,gt])
     loss_denoise.append(loss_total[1])
     loss_deconv.append(loss_total[2])
 
@@ -464,7 +474,7 @@ for it in range(iterations-load_init_model_iter):
         Validate(it + 1 + load_init_model_iter)
 
     if (it + 1 + load_init_model_iter) % test_interval == 0 or it==0:
-        write_log(writer, 'NBR2NBR_loss', np.mean(loss_denoise), it + 1 + load_init_model_iter)
+        write_log(writer, 'denoise_loss', np.mean(loss_denoise), it + 1 + load_init_model_iter)
         write_log(writer, 'deconv_loss', np.mean(loss_deconv), it + 1 + load_init_model_iter)
         loss_denoise = []
         loss_deconv = []

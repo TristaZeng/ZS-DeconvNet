@@ -92,6 +92,66 @@ def create_NBR2NBR_loss(TV_rate,mse_flag):
         return loss+reg_loss+TV_rate*TV_loss
     return NBR2NBR_loss
 
+def create_psf_loss_3D(psf, mse_flag, batch_size, upsample_flag, 
+                               TV_weight, Hess_weight, 
+                               insert_z, insert_xy):
+    def psf_loss(y_true,y_pred):
+        
+        y_true = y_true[:,:,:,:,0]
+        
+        h = y_pred.shape[1]
+        w = y_pred.shape[2]
+        d = y_pred.shape[3]
+        if upsample_flag:
+            insert_xy_local = insert_xy*2
+        else:
+            insert_xy_local = insert_xy
+        y_pred_conv = K.conv3d(y_pred, psf, padding='same')[:,insert_xy_local:h-insert_xy_local,insert_xy_local:w-insert_xy_local,insert_z:d-insert_z,:]
+        y_pred = tf.squeeze(y_pred,axis=4)[:,insert_xy_local:h-insert_xy_local,insert_xy_local:w-insert_xy_local,insert_z:d-insert_z]
+        y_pred_conv = tf.squeeze(y_pred_conv,axis=4)
+        if upsample_flag:
+            y_pred_conv = tf.image.resize(y_pred_conv,[y_pred_conv.shape[1]//2,y_pred_conv.shape[2]//2])
+        if mse_flag:
+            loss = K.mean(K.square(y_true-y_pred_conv))
+        else:
+            loss = K.mean(K.abs(y_true-y_pred_conv))  
+        
+        h = y_pred.shape[1]
+        w = y_pred.shape[2]
+        d = y_pred.shape[3]
+        if TV_weight>0:
+            y = tf.slice(y_pred, [0, 0, 0, 0], tf.stack([-1, h-1, -1, -1])) - tf.slice(y_pred, [0, 1, 0, 0], [-1, -1, -1, -1])
+            x = tf.slice(y_pred, [0, 0, 0, 0], tf.stack([-1, -1, w-1, -1])) - tf.slice(y_pred, [0, 0, 1, 0], [-1, -1, -1, -1])
+            if d==1:
+                z=0.0
+            else:
+                z = tf.slice(y_pred, [0, 0, 0, 0], tf.stack([-1, -1, -1, d-1])) - tf.slice(y_pred, [0, 0, 0, 1], [-1, -1, -1, -1])
+            TV_loss = K.mean(K.square(x))+K.mean(K.square(y))+K.mean(K.square(z))
+        else:
+            TV_loss = 0
+        hess_loss = 0
+        if Hess_weight>0:
+            x = y_pred[:,1:,:,:]-y_pred[:,:h-1,:,:]
+            y = y_pred[:,:,1:,:]-y_pred[:,:,:w-1,:]
+            if d>1:
+                z = y_pred[:,:,:,1:]-y_pred[:,:,:,:d-1]
+                for tv in [x,y,z]:
+                    hess = tv[:,1:,:,:]-tv[:,:-1,:,:]
+                    hess_loss = hess_loss + K.mean(K.square(hess))
+                    hess = tv[:,:,1:,:]-tv[:,:,:-1,:]
+                    hess_loss = hess_loss + K.mean(K.square(hess))
+                    hess = tv[:,:,:,1:]-tv[:,:,:,:-1]
+                    hess_loss = hess_loss + K.mean(K.square(hess))
+            else:
+                for tv in [x,y]:
+                    hess = tv[:,1:,:,:]-tv[:,:-1,:,:]
+                    hess_loss = hess_loss + K.mean(K.square(hess))
+                    hess = tv[:,:,1:,:]-tv[:,:,:-1,:]
+                    hess_loss = hess_loss + K.mean(K.square(hess))
+
+        return loss+TV_weight*TV_loss+Hess_weight*hess_loss
+    return psf_loss
+
 def create_psf_loss_3D_NBR2NBR(psf, mse_flag, batch_size, upsample_flag, 
                                TV_weight, Hess_weight, 
                                insert_z, insert_xy):
