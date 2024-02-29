@@ -39,7 +39,6 @@
 # --dz: sampling interval in z direction (um) for training data, needs to be 2 times the dz of raw data
 # --dxpsf: sampling interval in x direction (um) of raw PSF, if dxpsf is not equal to dx, interpolation will be performed. Can be read from TIFF.
 # --dzpsf: sampling interval in z direction (um) of raw PSF, if dzpsf is not equal to dz, interpolation will be performed. Can be read from TIFF.
-# --wavelength: excitation wavelength (nm)
 # --norm_flag: 1 for minmax normalization, 0 for /65535
 
 # about loss functions

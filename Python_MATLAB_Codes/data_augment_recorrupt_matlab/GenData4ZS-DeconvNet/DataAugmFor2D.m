@@ -139,17 +139,17 @@ for i = 1:cell_num
         % augment
         if RotFlag < 2
             [data_seg, data_gt_seg, ~] = XxDataSeg_ForTrain(data, data_gt, data_comp,...
-                max(round(TotalSegNum/cell_num),1) , SegX, SegY, RotFlag);
+                max(round(TotalSegNum/cell_num/recorrupt_times),1) , SegX, SegY, RotFlag);
             num_image = size(data_gt_seg, 3);
         else
             [data_seg, data_gt_seg, ~] = XxDataSeg_ForTrain(data, data_gt, data_comp,...
-                max(round(TotalSegNum/cell_num/4),1) , SegX, SegY, RotFlag);
+                max(round(TotalSegNum/cell_num/recorrupt_times/4),1) , SegX, SegY, RotFlag);
             % flip axis y
             curdata = flipud(data);
             curdata_gt = flipud(data_gt);
             curdata_comp = flipud(data_comp);
             [data_seg_ap, data_gt_seg_ap, ~] = XxDataSeg_ForTrain(curdata, curdata_gt, curdata_comp,...
-                max(round(TotalSegNum/cell_num/4),1), SegX, SegY, RotFlag);
+                max(round(TotalSegNum/cell_num/recorrupt_times/4),1), SegX, SegY, RotFlag);
             num_image = size(data_gt_seg_ap, 3);
             data_seg(:, :, end+1:end+num_image) = data_seg_ap;
             data_gt_seg(:, :, end+1:end+num_image) = data_gt_seg_ap;
@@ -158,7 +158,7 @@ for i = 1:cell_num
             curdata_gt = fliplr(data_gt);
             curdata_comp = fliplr(data_comp);
             [data_seg_ap, data_gt_seg_ap, ~] = XxDataSeg_ForTrain(curdata, curdata_gt, curdata_comp,...
-                max(round(TotalSegNum/cell_num/4),1), SegX, SegY, RotFlag);
+                max(round(TotalSegNum/cell_num/recorrupt_times/4),1), SegX, SegY, RotFlag);
             num_image = size(data_gt_seg_ap, 3);
             data_seg(:, :, end+1:end+num_image) = data_seg_ap;
             data_gt_seg(:, :, end+1:end+num_image) = data_gt_seg_ap;
@@ -167,7 +167,7 @@ for i = 1:cell_num
             curdata_gt = flipud(curdata_gt);
             curdata_comp = flipud(curdata_comp);
             [data_seg_ap, data_gt_seg_ap, ~] = XxDataSeg_ForTrain(curdata, curdata_gt, curdata_comp,...
-                max(round(TotalSegNum/cell_num/4),1), SegX, SegY, RotFlag);
+                max(round(TotalSegNum/cell_num/recorrupt_times/4),1), SegX, SegY, RotFlag);
             num_image = size(data_gt_seg_ap, 3);
             data_seg(:, :, end+1:end+num_image) = data_seg_ap;
             data_gt_seg(:, :, end+1:end+num_image) = data_gt_seg_ap;

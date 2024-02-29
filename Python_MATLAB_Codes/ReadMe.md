@@ -18,12 +18,15 @@ This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-superv
 <h2 id="File structure">1. File structure</h2>
 
 - <code>./data_augment_recorrupt_matlab</code> includes the MATLAB codes for generating training datasets and simulation of raw 3D SIM images of beads
+  
   + `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet` includes the MATLAB codes for generating training dataset for 2D and 3D ZS-DeconvNet
   
   + `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet-SIM` includes the MATLAB codes for generating training dataset for 2D and 3D ZS-DeconvNet for Structured Illumination Microscopy, as well as one demo for generating simulated SIM beads
   
   + `./data_augment_recorrupt_matlab/XxUtils` includes common tool packages
+
 - <code>./train_inference_python</code> includes the Python codes of training and inference, and the required dependencies
+  
   - <code>./train_inference_python/models</code> includes the optional models
   - <code>./train_inference_python/utils</code> is the tool package
 
@@ -98,8 +101,11 @@ Skip this part if you do not wish to train a new model. You can just test the de
 To train a new model, you need to:
 
 + Generated the training dataset following the instructions in the previous part and obtain the path to the corresponding PSF.
+
 + Choose a test image/volume.
+
 + Choose the demo file based on needs:
+  
   + `./train_inference_python/train_demo_2D.sh`: train with 2D wide-field data and alike.
   
   + `./train_inference_python/train_demo_3D.sh`: train with 3D wide-field, confocal, lattice light-sheet, lattice light-sheet SIM data and alike.
@@ -107,10 +113,15 @@ To train a new model, you need to:
   + `./train_inference_python/train_demo_2DSIM.sh`: train with 2D reconstructed SIM data.
   
   + `./train_inference_python/train_demo_3DSIM.sh`: train with 3D reconstructed SIM data.
+
 + Set `otf_or_psf_path` (or `psf_path`), `data_dir`, `folder` and `test_images_path` in said demo file. Remember to examine other parameters like patch size and dx as well because their default value may not fit your training data.
+
 + Run it in your terminal.
+
 + The result wills be saved to <code>./your_saved_models/</code>.
+
 + Run <code>tensorboard --logdir [save_weights_dir]/[save_weights_name]/graph</code> to monitor the training process via tensorboard if needed.
+
 + Other **detailed description of each input argument of the python codes** can be found in the comments of the demo file. You can set them accordingly.
 
 <hr>

@@ -89,7 +89,7 @@ for cur_id = id_min: id_max
         
         for repeat_id = 1: 1: repeat_time
             alpha_v = (alpha_v_max-alpha_v_min)*rand() + alpha_v_min;
-            D = 1/alpha_v * ones(h,w);
+            D = 1/alpha_v * ones(h,w); 
             D_1 = alpha_v * ones(h,w);
 
             beta_1 = (beta_1_max-beta_1_min)*rand()+beta_1_min;

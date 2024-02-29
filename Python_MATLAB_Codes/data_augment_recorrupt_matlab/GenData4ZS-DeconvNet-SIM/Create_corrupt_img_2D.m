@@ -2,7 +2,7 @@ clear;
 close all;
 cd 'C:\Users\Admin\Git\repo\ZS-DeconvNet\Python_MATLAB_Codes\data_augment_recorrupt_matlab'; % change this path to your cloned path
 addpath(genpath('./XxUtils'));
-addpath(genpath('./GenData4ZS-DeconvNet-SIM'))
+addpath(genpath('./GenData4ZS-DeconvNet-SIM'));
 
 % It should be noted that, the raw data loading code of this demo is based on the file structure of BioSR dataset, and may not
 % be consistent with your raw data layout.

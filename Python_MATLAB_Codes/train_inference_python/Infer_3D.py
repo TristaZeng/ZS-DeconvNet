@@ -16,13 +16,13 @@ gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.95)
 tf.compat.v1.Session(config=tf.compat.v1.compat.v1.ConfigProto(gpu_options=gpu_options))
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--bs", type=int, default=[1], nargs='*')
-parser.add_argument("--num_seg_window_z", type=int, default=[4], nargs='*')
-parser.add_argument("--overlap_z", type=int, default=[4], nargs='*')
-parser.add_argument("--num_seg_window_x", type=int, default=[4], nargs='*')
-parser.add_argument("--overlap_x", type=int, default=[20], nargs='*')
-parser.add_argument("--num_seg_window_y", type=int, default=[4], nargs='*')
-parser.add_argument("--overlap_y", type=int, default=[20], nargs='*')
+parser.add_argument("--bs", type=tuple, default=[1], nargs='*')
+parser.add_argument("--num_seg_window_z", type=tuple, default=[4], nargs='*')
+parser.add_argument("--overlap_z", type=tuple, default=[4], nargs='*')
+parser.add_argument("--num_seg_window_x", type=tuple, default=[4], nargs='*')
+parser.add_argument("--overlap_x", type=tuple, default=[20], nargs='*')
+parser.add_argument("--num_seg_window_y", type=tuple, default=[4], nargs='*')
+parser.add_argument("--overlap_y", type=tuple, default=[20], nargs='*')
 
 parser.add_argument("--input_dir", type=str, default='../saved_models/LLS3D_Mitochondria/test_data/NoisyWF.tif')
 parser.add_argument("--load_weights_path", type=str, default='../saved_models/LLS3D_Mitochondria/saved_model/weights_10000.h5')
@@ -87,6 +87,7 @@ for tif_ind in range(num_tif):
     # load input stack
     if 'tif' in file_path[tif_ind]:
         image = tiff.imread(file_path[tif_ind]).astype('float')
+        image = np.flip(image,axis=1)
     else:
         header,image = read_mrc(file_path[tif_ind])
         image = image.astype('float')
@@ -218,9 +219,9 @@ for tif_ind in range(num_tif):
     # post-process
     if args.Fourier_damping_flag:
         output_dec = np.fft.fftshift(np.fft.fft2(output_dec))
-        seg_window_y = output_dec.shape[2]//2
-        output_dec[:,0:args.Fourier_damping_length,seg_window_y-args.Fourier_damping_width:seg_window_y+args.Fourier_damping_width+1] = 0
-        output_dec[:,-args.Fourier_damping_length:,seg_window_y-args.Fourier_damping_width:seg_window_y+args.Fourier_damping_width+1] = 0  
+        half_y = output_dec.shape[2]//2
+        output_dec[:,0:args.Fourier_damping_length,half_y-args.Fourier_damping_width:half_y+args.Fourier_damping_width+1] = 0
+        output_dec[:,-args.Fourier_damping_length:,half_y-args.Fourier_damping_width:half_y+args.Fourier_damping_width+1] = 0  
         output_dec = np.real(np.fft.ifft2(np.fft.ifftshift(output_dec)))
         
     # save

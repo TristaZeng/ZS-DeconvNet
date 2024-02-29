@@ -54,7 +54,6 @@ parser.add_argument("--dx", type=float, default=0.0926)
 parser.add_argument("--dz", type=float, default=0.3704)
 parser.add_argument("--dxpsf", type=float, default=0.0926)
 parser.add_argument("--dzpsf", type=float, default=0.05)
-parser.add_argument("--wavelength", type=int, default=488)
 parser.add_argument("--norm_flag", type=int, default=0)
 
 # about loss functions
