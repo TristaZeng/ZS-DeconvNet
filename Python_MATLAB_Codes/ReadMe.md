@@ -1,6 +1,6 @@
 <h1> ZS-DeconvNet </h1>
 
-This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-supervised deep-learning tool for instant denoising and super-resolution in optical fluorescence microscopy. This package includes the Python implementation of training and inference, and MATLAB implementation of training data generation and simulation of raw 3D SIM images of beads.
+This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-supervised deep-learning tool for instant denoising and super-resolution in optical fluorescence microscopy. This package includes the Python implementation of training and inference, and MATLAB implementation of training data generation and simulation of PSF.
 
 <h2> Content </h2>
 
@@ -10,16 +10,16 @@ This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-superv
   <li><a href="#Data Pre-processing">3. Training dataset generation</a></li>
   <li><a href="#Implementation of Python code1">4. Train a new model</a></li>
   <li><a href="#Implementation of Python code2">5. Test a well-trained model</a></li>
-  <li><a href="#Simu 3D SIM">6. Generate raw 3D SIM images of beads</a></li>
+  <li><a href="#PSF">6. PSF Generation</a></li>
 </ul>
 
 <hr>
 
 <h2 id="File structure">1. File structure</h2>
 
-- <code>./data_augment_recorrupt_matlab</code> includes the MATLAB codes for generating training datasets and simulation of raw 3D SIM images of beads
+- <code>./data_augment_recorrupt_matlab</code> includes the MATLAB codes for generating training datasets and simulation of PSF
   
-  + `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet` includes the MATLAB codes for generating training dataset for 2D and 3D ZS-DeconvNet
+  + `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet` includes the MATLAB codes for generating training dataset for 2D and 3D ZS-DeconvNet, as well as one demo for generating simulated 3D PSF
   
   + `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet-SIM` includes the MATLAB codes for generating training dataset for 2D and 3D ZS-DeconvNet for Structured Illumination Microscopy, as well as one demo for generating simulated SIM beads
   
@@ -30,11 +30,11 @@ This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-superv
   - <code>./train_inference_python/models</code> includes the optional models
   - <code>./train_inference_python/utils</code> is the tool package
 
-It is recommended to download the demo test data and pre-trained models contained in `saved_models` from [our open-source datasets](https://drive.google.com/drive/folders/1XAOuLYXYFCxlElRwvik_fs7TqZlRixGv?usp=sharing), and place it under the same folder so that:
+It is recommended to download the demo test data and pre-trained models contained in `saved_models` from [our open-source datasets](https://drive.google.com/drive/folders/1XAOuLYXYFCxlElRwvik_fs7TqZlRixGv?usp=sharing), and place it under the folder with the same name so that:
 
 + `./saved_models` includes pre-trained models for testing, and for each modality and structure `xx`:
   
-  - `./saved_models/xx/saved_model` includes corresponding pre-trained model and inference result
+  - `./saved_models/xx/saved_model` includes corresponding the pre-trained model and inference result, which you should be able to get by processing the raw test data with the pre-trained model
   - `./saved_models/xx/test_data` includes raw test data
 
 <hr>
@@ -136,9 +136,20 @@ To test a well-trained ZS-DeconvNet model, you should:
 
 <hr>
 
-<h2  id="Simu 3D SIM">6. Generate raw 3D SIM images of beads</h2>
+<h2  id="PSF">6. PSF Generation</h2>
 
-For researchers who cannot get access to the 3D-SIM PSF, we provide a MATLAB script to generate raw 3D-SIM images of a simulated bead given the excitation NA, experimental PSF/OTF of the imaging system, excitation lambda, and pixel size. After 3D-SIM reconstruction via either commercial or open-source software, the simulated SR-SIM image stack of beads can be used as PSF input to our ZS-DeconvNet.
+For researchers who cannot get access to the experimental captured PSF, we provide a MATLAB script to generate simulated PSFs.
+
+<h3> 6.1 Generation of 3D Wide-field PSF </h3>
+
+We provide script to generate 3D wide-field PSF given the NA, emission wavelength, pixel size, refrative index and PSF size. The output can be directly used for our (3D) ZS-DeconvNet.
+
++ Adjust the parameters in `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet/create_PSF.m`.
++ Run `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet/create_PSF.m` and the simulated PSF will be saved to your designated file path.
+
+<h3> 6.2 Generation of 3D SIM PSF </h3>
+
+We provide script to generate raw 3D-SIM images of a simulated bead given the excitation NA, PSF/OTF of the imaging system, excitation wavelength, and pixel size. After 3D-SIM reconstruction via either commercial or open-source software, the simulated SR-SIM image stack of beads can be used as PSF input to our ZS-DeconvNet-SIM.
 
 + Run `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet-SIM/main_create_simu_beads.m` and the generated raw 3D-SIM images of a simulated bead `img_sim` will be saved to your MATLAB workspace. 
 + Detailed descriptions of parameters is given in the comments of `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet-SIM/main_create_simu_beads.m`. You can change them according to your needs.

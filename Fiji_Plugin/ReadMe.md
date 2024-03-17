@@ -57,7 +57,7 @@ Given a pre-trained ZS-DeconvNet model and an image or stack to be processed, th
   | Show denoise result                | Yes           | Tick if you want to see the denoised output.                                                                                                                                                                                                                                                                                                                                                                                                                |
   
   Please note that when using 3D ZS-DeconvNet model, make sure the third
-  dimension of the stack is matched with `3[153]` dimension of the model:
+  dimension of the stack is matched with `3[153]` dimension of the model by clicking `Adjust mapping of TF network input`:
 
 <div align=center><img src="./readme_imgs/predict.png" alt="Predict Parameter" /></div>
 
@@ -156,7 +156,7 @@ To transfer a ZS-DeconvNet model trained in Python to .zip format to use in ZS-D
 
 + Activate the environment by `conda activate tensorflow1`.
 
-+ Install the packages by `pip install -r requirements.txt`.
++ Install the packages by `pip install -r ./TransferTFModelToPluginFormat/requirements.txt`.
 
 + Run ` ./TransferTFModelToPluginFormat/TransferZSDeconv2DModelToPluginFormat.py` or `./TransferTFModelToPluginFormat/TransferZSDeconv3DModelToPluginFormat.py` in your created environment according to the model type (2D or 3D) you want to convert. Remember to set `out_path` and `load_weights_path` as your desired output path and your root path of saved python model.
 

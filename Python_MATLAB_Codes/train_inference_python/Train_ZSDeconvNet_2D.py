@@ -137,7 +137,7 @@ with open(save_weights_path+"config.txt","a") as f:
 source_path = glob.glob(test_images_path)
 test_num = len(source_path)
 img_list_p=[]
-insert_xy_test = 0
+insert_xy_test = insert_xy
 for i in range(test_num):
     images_path = source_path[i]
     img = np.array(imageio.mimread(images_path)).astype(np.float32)

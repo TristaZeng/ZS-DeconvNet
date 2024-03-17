@@ -1,6 +1,4 @@
-function XxPSFGenerator(dxy,dz,SizeXY,SizeZ,lamd,NA,FileName)
-
-RI = 1.33;
+function XxPSFGenerator(dxy,dz,SizeXY,SizeZ,lamd,NA,RI,FileName)
 
 dk = 2*pi/dxy/SizeXY;
 kx = (-(SizeXY-1)/2:1:(SizeXY-1)/2)*dk;
