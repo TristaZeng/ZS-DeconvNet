@@ -18,6 +18,8 @@ You can follow the instructions below to install the plugin:
 
 We mainly developed and tested the ZS-DeconvNet Fiji plugin on workstations of Linux and Windows operating system equipped with <b>Nvidia graphics cards</b>. Because TensorFlow-GPU package is currently incompatible with MacOS, we are sorry that MacBook users can only use the TensorFlow-CPU to run our ZS-DeconvNet Fiji plugin at present, which is relatively inefficient compared to Nvidia GPU-based computation. We’ll be looking for the solutions and trying to make our plugin compatible with MacBook for higher efficiency in the future.
 
+Installation should take around three minutes.
+
 ****
 
 ## 2. Set CPU/GPU and TensorFlow version

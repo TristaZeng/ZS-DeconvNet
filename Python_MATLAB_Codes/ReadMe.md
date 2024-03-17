@@ -1,6 +1,6 @@
 <h1> ZS-DeconvNet </h1>
 
-This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-supervised deep-learning tool for instant denoising and super-resolution in optical fluorescence microscopy. This package includes the Python implementation of training and inference, and MATLAB implementation of training data generation and simulation of PSF.
+This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-supervised deep-learning tool for instant denoising and super-resolution in optical fluorescence microscopy. This package includes the Python implementation of training and inference, and MATLAB implementation of training data generation and simulation of PSF. You should be able to download our code and set up the environment within five minutes.
 
 <h2> Content </h2>
 
