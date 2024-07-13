@@ -11,6 +11,7 @@ This is the source codes and instructions for <b>ZS-DeconvNet</b>, a self-superv
   <li><a href="#Implementation of Python code1">4. Train a new model</a></li>
   <li><a href="#Implementation of Python code2">5. Test a well-trained model</a></li>
   <li><a href="#PSF">6. PSF Generation</a></li>
+  <li><a href="#Updates">7. Updates</a></li>
 </ul>
 
 <hr>
@@ -153,3 +154,14 @@ We provide script to generate raw 3D-SIM images of a simulated bead given the ex
 
 + Run `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet-SIM/main_create_simu_beads.m` and the generated raw 3D-SIM images of a simulated bead `img_sim` will be saved to your MATLAB workspace. 
 + Detailed descriptions of parameters is given in the comments of `./data_augment_recorrupt_matlab/GenData4ZS-DeconvNet-SIM/main_create_simu_beads.m`. You can change them according to your needs.
+
+<hr>
+
+<h2 id="Updates">7. Updates</h2>
+
+<h3> 2024.7 </h3>
+
+1. Change the calculation of `output_mul_otf` to match that in the training process: cropping padding before multiplying OTF --> cropping padding after multiplying OTF 
+2. Specify the fft dimensions in `Validate()`
+3. Change the description of `dz` in `train_demo_3DSIM.sh`
+4. Add codes to make sure the type of `num_seg_window_x` fits the processing.

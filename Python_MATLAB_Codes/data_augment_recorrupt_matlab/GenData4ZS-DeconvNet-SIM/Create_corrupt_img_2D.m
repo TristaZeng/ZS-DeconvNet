@@ -93,7 +93,7 @@ for smpl_id = 1: 1: sub_dir_count
                 img_raw1(:,:,ss) = img_raw(:,:,ss) + D .* sqrt(Sigma_x) .* z_n;
                 img_raw2(:,:,ss) = img_raw(:,:,ss) - D_1 .* sqrt(Sigma_x) .* z_n;
             end
-            img_raw1 = uint16(img_raw1);
+            img_raw1 = uint16(img_raw1); 
             file_name_input= ['smpl_',num2str(smpl_id,'%02d'),'_snr_',num2str(snr_id,'%02d'),'-input',num2str(repeat_id),'.mrc']; 
             handle = fopen([save_root_dir,'/',file_name_input],'w+');
             handle = XxWriteMRC_SmallEndian(handle, img_raw1, header);

@@ -270,14 +270,14 @@ psf_g = psf_g/np.sum(psf_g)
 psf_width,psf_height,psf_depth = psf_g.shape
         
 # get OTF
-psf = np.zeros([psf_g.shape[0],psf_g.shape[1],input_z])
-if psf_depth<input_z:
-    psf[:,:,input_z//2-psf_depth//2:input_z//2+psf_depth//2+1] = psf_g
+psf = np.zeros([psf_g.shape[0],psf_g.shape[1],input_z+2*insert_z])
+if psf_depth<(input_z+2*insert_z):
+    psf[:,:,(input_z+2*insert_z)//2-psf_depth//2:(input_z+2*insert_z)//2+psf_depth//2+1] = psf_g
 else:
-    psf = psf_g[:,:,psf_depth//2-input_z//2:psf_depth//2+input_z//2+1]
+    psf = psf_g[:,:,psf_depth//2-(input_z+2*insert_z)//2:psf_depth//2+(input_z+2*insert_z)//2+1]
 otf = np.fft.fftshift(np.fft.fftn(psf))
 otf = np.abs(otf)
-otf_g = np.zeros([input_x*(upsample_flag+1),input_y*(upsample_flag+1),input_z])
+otf_g = np.zeros([(input_x+2*insert_xy)*(upsample_flag+1),(input_y+2*insert_xy)*(upsample_flag+1),input_z+2*insert_z])
 for z in range(otf.shape[2]):
     otf_g[:,:,z] = cv2.resize(otf[:,:,z],(otf_g.shape[0],otf_g.shape[1]))
 otf_g = otf_g/np.sum(otf_g)
@@ -380,12 +380,13 @@ input_valid = np.concatenate((insert_shape,input_valid,insert_shape),axis=2)
 def Validate(it):
     
     output = g.predict(input_valid)
-    output_fft = np.fft.fftshift(np.fft.fftn(np.squeeze(output[1])))
+    output_fft = np.fft.fftshift(np.fft.fftn(np.squeeze(output[1]),axes=[1,2,3]),axes=[1,2,3])
+    output_mul_otf = np.real(np.fft.ifftn(np.fft.ifftshift(output_fft*np.expand_dims(otf_g,axis=0),axes=[1,2,3]),axes=[1,2,3]))
     if upsample_flag:
-        output_fft = output_fft[:,insert_xy*2:output_fft.shape[1]-insert_xy*2,insert_xy*2:output_fft.shape[2]-insert_xy*2,insert_z:output_fft.shape[3]-insert_z]
+        output_mul_otf = output_mul_otf[:,insert_xy*2:output_mul_otf.shape[1]-insert_xy*2,insert_xy*2:output_mul_otf.shape[2]-insert_xy*2,insert_z:output_mul_otf.shape[3]-insert_z]
     else:
-        output_fft = output_fft[:,insert_xy:output_fft.shape[1]-insert_xy,insert_xy:output_fft.shape[2]-insert_xy,insert_z:output_fft.shape[3]-insert_z]
-    output_mul_otf = np.real(np.fft.ifftn(np.fft.ifftshift(output_fft*np.expand_dims(otf_g,axis=0))))
+        output_mul_otf = output_mul_otf[:,insert_xy:output_mul_otf.shape[1]-insert_xy,insert_xy:output_mul_otf.shape[2]-insert_xy,insert_z:output_mul_otf.shape[3]-insert_z]
+    
     for i in range(valid_num):    
         imageio.volwrite(valid_path+str(i)+'out_mul_otf_iter'+'%05d'%it+'.tif', np.transpose(np.uint16(prctile_norm(output_mul_otf[i,:,:,:])*65535),[2,0,1]))   
         imageio.volwrite(valid_path+str(i)+'out_denoise_iter'+'%05d'%it+'.tif', np.transpose(np.uint16(prctile_norm(output[0][i,:,:,:,0])*65535),[2,0,1]))

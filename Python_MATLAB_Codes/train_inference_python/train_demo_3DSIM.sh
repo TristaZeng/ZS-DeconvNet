@@ -38,7 +38,7 @@
 # --insert_z: padded blank margin in axial direction (how many slices)
 # --batch_size: batch size for training
 # --dx: sampling interval in x direction (um) for training data, needs to be 1/2 of raw data dx when upsample_flag=1
-# --dz: sampling interval in z direction (um) for training data, needs to be 2 times the dz of raw data
+# --dz: sampling interval in z direction (um) for training data, needs to be the same as the dz of raw data
 # --dxpsf: sampling interval in x direction (um) of raw PSF, if dxpsf is not equal to dx, interpolation will be performed. Can be read from TIFF.
 # --dzpsf: sampling interval in z direction (um) of raw PSF, if dzpsf is not equal to dz, interpolation will be performed. Can be read from TIFF.
 # --wavelength: excitation wavelength (nm)

@@ -16,13 +16,13 @@ gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.95)
 tf.compat.v1.Session(config=tf.compat.v1.compat.v1.ConfigProto(gpu_options=gpu_options))
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--bs", type=tuple, default=[1], nargs='*')
-parser.add_argument("--num_seg_window_z", type=tuple, default=[4], nargs='*')
-parser.add_argument("--overlap_z", type=tuple, default=[4], nargs='*')
-parser.add_argument("--num_seg_window_x", type=tuple, default=[4], nargs='*')
-parser.add_argument("--overlap_x", type=tuple, default=[20], nargs='*')
-parser.add_argument("--num_seg_window_y", type=tuple, default=[4], nargs='*')
-parser.add_argument("--overlap_y", type=tuple, default=[20], nargs='*')
+parser.add_argument("--bs", default=[1], nargs='*')
+parser.add_argument("--num_seg_window_z", default=[4], nargs='*')
+parser.add_argument("--overlap_z", default=[4], nargs='*')
+parser.add_argument("--num_seg_window_x", default=[4], nargs='*')
+parser.add_argument("--overlap_x", default=[20], nargs='*')
+parser.add_argument("--num_seg_window_y", default=[4], nargs='*')
+parser.add_argument("--overlap_y", default=[20], nargs='*')
 
 parser.add_argument("--input_dir", type=str, default='../saved_models/LLS3D_Mitochondria/test_data/NoisyWF.tif')
 parser.add_argument("--load_weights_path", type=str, default='../saved_models/LLS3D_Mitochondria/saved_model/weights_10000.h5')
@@ -40,12 +40,19 @@ parser.add_argument("--upsample_flag", type=int, default=0)
 args = parser.parse_args()
 
 bs = args.bs
-num_seg_window_z = args.num_seg_window_z
-overlap_z = args.overlap_z
+bs = [int(item) for item in bs]
 num_seg_window_x = args.num_seg_window_x
+num_seg_window_x = [int(item) for item in num_seg_window_x]
 overlap_x = args.overlap_x
+overlap_x = [int(item) for item in overlap_x]
 num_seg_window_y = args.num_seg_window_y
+num_seg_window_y = [int(item) for item in num_seg_window_y]
 overlap_y = args.overlap_y
+overlap_y = [int(item) for item in overlap_y]
+num_seg_window_z = args.num_seg_window_z
+num_seg_window_z = [int(item) for item in num_seg_window_z]
+overlap_z = args.overlap_z
+overlap_z = [int(item) for item in overlap_z]
 
 input_dir = args.input_dir
 load_weights_path = args.load_weights_path
